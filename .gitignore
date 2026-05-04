@@ -19,7 +19,18 @@ heaptrack*
 
 # build folder
 build/
+build-gcc/
+build-gcc-release/
+build-clang/
+build-clang-release/
 CMakeLists.txt.*
+
+# code coverage
+build-coverage/
+coverage/
+*.gcda
+*.gcno
+*.gcov
 
 # kate
 *kate-swp
@@ -55,3 +66,6 @@ CMakeLists.txt.*
 
 # Temporary files
 *.swp
+
+#clangd cache
+.cache/*
