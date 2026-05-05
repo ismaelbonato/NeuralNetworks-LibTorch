@@ -33,7 +33,7 @@ RUN apt-get update && apt-get install -y \
     gcovr \
     pkg-config \
     libopencv-dev \
-    libomp-dev \
+    libomp-20-dev \
     libgomp1 \
     && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 \
     && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100 \

@@ -57,19 +57,59 @@
   "buildPresets": [
     {
       "name": "gcc-debug",
-      "configurePreset": "gcc-debug"
+      "configurePreset": "gcc-debug",
+      "targets": [
+        "all"
+      ]
+    },
+    {
+      "name": "gcc-debug-tests",
+      "configurePreset": "gcc-debug",
+      "targets": [
+        "nn-training-tests"
+      ]
     },
     {
       "name": "gcc-release",
-      "configurePreset": "gcc-release"
+      "configurePreset": "gcc-release",
+      "targets": [
+        "all"
+      ]
+    },
+    { 
+      "name": "gcc-release-tests",
+      "configurePreset": "gcc-release",
+      "targets": [
+        "nn-training-tests"
+      ]
     },
     {
       "name": "clang-debug",
-      "configurePreset": "clang-debug"
+      "configurePreset": "clang-debug",
+      "targets": [
+        "all"
+      ]
+    },
+    {
+      "name": "clang-debug-tests",
+      "configurePreset": "clang-debug",
+      "targets": [
+        "nn-training-tests"
+      ]
     },
     {
       "name": "clang-release",
-      "configurePreset": "clang-release"
+      "configurePreset": "clang-release",
+      "targets": [
+        "all"
+      ]
+    },
+    {
+      "name": "clang-release-tests",
+      "configurePreset": "clang-release",
+      "targets": [
+        "nn-training-tests"
+      ]
     }
   ],
   "testPresets": [
