@@ -18,7 +18,8 @@ std::vector<double> png_to_bits(const std::string &filename)
 
     for (size_t r = 0; r < static_cast<size_t>(resizedImage.rows); ++r) {
         for (size_t c = 0; c < static_cast<size_t>(resizedImage.cols); ++c) {
-            auto pixel = resizedImage.at<uchar>(static_cast<int>(r), static_cast<int>(c));
+            auto pixel = resizedImage.at<uchar>(static_cast<int>(r),
+                                                static_cast<int>(c));
             pattern.emplace_back(pixel > 128 ? 1 : -1);
         }
     }
@@ -44,7 +45,7 @@ int main()
         torch::tensor(png_to_bits("Misc/mrburns.png"), torch::kFloat32),
     };
 
-    int N = patterns[0].size(0);
+    const int64_t N = patterns[0].size(0);
     torch::Tensor W = torch::zeros({N, N});
 
     // Hebbian learning rule: W = sum(p * p^T), zero diagonal
@@ -59,13 +60,13 @@ int main()
 
     std::cout << "Initial (noisy) input: " << std::endl;
     size_t idx = 0;
-    auto ptr = test.data_ptr<float>();
-    for (int i = 0; i < test.size(0); ++i) {
+    for (int64_t i = 0; i < test.size(0); ++i) {
         if (idx == 64) {
             std::cout << std::endl;
             idx = 0;
         }
-        std::cout << (ptr[i] > 0 ? "o" : " ");
+        const float value = test[i].item<float>();
+        std::cout << (value > 0 ? "o" : " ");
         idx++;
     }
     std::cout << std::endl;
@@ -82,13 +83,13 @@ int main()
     std::cout << "Recalled pattern: " << std::endl;
 
     idx = 0;
-    auto ptr2 = test.data_ptr<float>();
-    for (int i = 0; i < test.size(0); ++i) {
+    for (int64_t i = 0; i < test.size(0); ++i) {
         if (idx == 64) {
             std::cout << std::endl;
             idx = 0;
         }
-        std::cout << (ptr2[i] > 0 ? "o" : " ");
+        const float value = test[i].item<float>();
+        std::cout << (value > 0 ? "o" : " ");
         idx++;
     }
     std::cout << std::endl;

@@ -1,0 +1,18 @@
+services:
+  dev-nn-training: 
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USERNAME: ${USER}
+        UID: ${USER_ID}
+        GID: ${GROUP_ID}
+    container_name: dev-nn-training-container
+    volumes:
+      - .:/home/${USER}/workspace
+      - ~/.ssh:/home/${USER}/.ssh:ro
+      - ~/.codex-devcontainer:/home/${USER}/.codex
+    working_dir: /home/${USER}/workspace
+    command: sleep infinity
+    hostname: nnTrainingContainer
+    restart: "no"
