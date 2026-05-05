@@ -1,0 +1,4 @@
+[submodule "libs/nn-runtime"]
+	path = libs/nn-runtime
+	url = https://github.com/ismaelbonato/nn-runtime.git
+	branch = integration/nn-training
