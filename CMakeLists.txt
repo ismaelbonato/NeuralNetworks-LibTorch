@@ -96,7 +96,11 @@ find_package(OpenCV REQUIRED)
 
 add_subdirectory(libs/nn-runtime)
 
-add_executable(${PROJECT_NAME} hopfield.cpp)
+add_executable(${PROJECT_NAME}
+    main.cpp
+    src/hopfield.cpp
+    src/hopfield.h
+)
 
 network_enable_warnings(${PROJECT_NAME})
 
@@ -104,7 +108,9 @@ if(CPPCHECK_EXECUTABLE)
     add_custom_target(${PROJECT_NAME}-cppcheck
         COMMAND ${CPPCHECK_EXECUTABLE}
             ${CPPCHECK_ARGS}
-            ${CMAKE_CURRENT_SOURCE_DIR}/hopfield.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/hopfield.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/hopfield.h
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Running cppcheck"
         VERBATIM

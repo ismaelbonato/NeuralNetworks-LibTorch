@@ -32,17 +32,17 @@ torch::Tensor custom_sign(torch::Tensor x)
     return torch::where(x >= 0, torch::ones_like(x), -torch::ones_like(x));
 }
 
-int main()
+int runHopfieldDemo()
 {
     // Define patterns to store (binary: -1, 1)
     std::vector<torch::Tensor> patterns = {
         torch::tensor(png_to_bits("Misc/bart.png"), torch::kFloat32),
         torch::tensor(png_to_bits("Misc/homer.png"), torch::kFloat32),
         torch::tensor(png_to_bits("Misc/marge.png"), torch::kFloat32),
-        torch::tensor(png_to_bits("Misc/meg.png"), torch::kFloat32),
-        torch::tensor(png_to_bits("Misc/grandpa.png"), torch::kFloat32),
-        torch::tensor(png_to_bits("Misc/lisa.png"), torch::kFloat32),
-        torch::tensor(png_to_bits("Misc/mrburns.png"), torch::kFloat32),
+        //torch::tensor(png_to_bits("Misc/meg.png"), torch::kFloat32),
+        //torch::tensor(png_to_bits("Misc/grandpa.png"), torch::kFloat32),
+        //torch::tensor(png_to_bits("Misc/lisa.png"), torch::kFloat32),
+        //torch::tensor(png_to_bits("Misc/mrburns.png"), torch::kFloat32),
     };
 
     const int64_t N = patterns[0].size(0);
