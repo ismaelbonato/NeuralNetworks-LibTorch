@@ -1,4 +1,4 @@
-#include "src/feedforward.h"
+#include "src/benchmark/feedforward.h"
 
 int main()
 {

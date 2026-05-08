@@ -96,18 +96,18 @@ find_package(Torch REQUIRED)
 add_subdirectory(libs/nn-runtime)
 
 set(FEEDFORWARD_BENCHMARK_SOURCES
-    src/feedforward.cpp
-    src/feedforward.h
-    src/feedforward/benchmark/BenchmarkComparison.cpp
-    src/feedforward/benchmark/BenchmarkComparison.h
-    src/feedforward/common/FeedforwardTypes.cpp
-    src/feedforward/common/FeedforwardTypes.h
-    src/feedforward/runtime/LibTorchRuntime.cpp
-    src/feedforward/runtime/LibTorchRuntime.h
-    src/feedforward/runtime/NNRuntime.cpp
-    src/feedforward/runtime/NNRuntime.h
-    src/feedforward/training/FeedforwardModel.cpp
-    src/feedforward/training/FeedforwardModel.h
+    src/benchmark/feedforward.cpp
+    src/benchmark/feedforward.h
+    src/benchmark/feedforward/benchmark/BenchmarkComparison.cpp
+    src/benchmark/feedforward/benchmark/BenchmarkComparison.h
+    src/benchmark/feedforward/common/FeedforwardTypes.cpp
+    src/benchmark/feedforward/common/FeedforwardTypes.h
+    src/benchmark/feedforward/runtime/LibTorchRuntime.cpp
+    src/benchmark/feedforward/runtime/LibTorchRuntime.h
+    src/benchmark/feedforward/runtime/NNRuntime.cpp
+    src/benchmark/feedforward/runtime/NNRuntime.h
+    src/benchmark/feedforward/training/FeedforwardModel.cpp
+    src/benchmark/feedforward/training/FeedforwardModel.h
 )
 
 add_library(${PROJECT_NAME}-feedforward

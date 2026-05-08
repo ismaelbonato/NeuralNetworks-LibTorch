@@ -1,7 +1,7 @@
 #pragma once
 
-#include "feedforward/common/FeedforwardTypes.h"
-#include "feedforward/training/FeedforwardModel.h"
+#include "benchmark/feedforward/common/FeedforwardTypes.h"
+#include "benchmark/feedforward/training/FeedforwardModel.h"
 
 #include <memory>
 #include <torch/torch.h>

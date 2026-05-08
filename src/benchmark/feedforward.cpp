@@ -1,9 +1,9 @@
 #include "feedforward.h"
 
-#include "feedforward/benchmark/BenchmarkComparison.h"
-#include "feedforward/common/FeedforwardTypes.h"
-#include "feedforward/runtime/LibTorchRuntime.h"
-#include "feedforward/runtime/NNRuntime.h"
+#include "benchmark/feedforward/benchmark/BenchmarkComparison.h"
+#include "benchmark/feedforward/common/FeedforwardTypes.h"
+#include "benchmark/feedforward/runtime/LibTorchRuntime.h"
+#include "benchmark/feedforward/runtime/NNRuntime.h"
 
 #include <iostream>
 #include <memory>

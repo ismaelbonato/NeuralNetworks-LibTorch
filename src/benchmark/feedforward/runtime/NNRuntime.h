@@ -1,6 +1,6 @@
 #pragma once
 
-#include "feedforward/common/FeedforwardTypes.h"
+#include "benchmark/feedforward/common/FeedforwardTypes.h"
 
 #include "base/Model.h"
 #include "base/Types.h"
