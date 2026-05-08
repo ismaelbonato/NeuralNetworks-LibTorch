@@ -95,10 +95,45 @@ find_package(Torch REQUIRED)
 
 add_subdirectory(libs/nn-runtime)
 
-add_executable(${PROJECT_NAME}
-    main.cpp
+set(FEEDFORWARD_BENCHMARK_SOURCES
     src/feedforward.cpp
     src/feedforward.h
+    src/feedforward/benchmark/BenchmarkComparison.cpp
+    src/feedforward/benchmark/BenchmarkComparison.h
+    src/feedforward/common/FeedforwardTypes.cpp
+    src/feedforward/common/FeedforwardTypes.h
+    src/feedforward/runtime/LibTorchRuntime.cpp
+    src/feedforward/runtime/LibTorchRuntime.h
+    src/feedforward/runtime/NNRuntime.cpp
+    src/feedforward/runtime/NNRuntime.h
+    src/feedforward/training/FeedforwardModel.cpp
+    src/feedforward/training/FeedforwardModel.h
+)
+
+add_library(${PROJECT_NAME}-feedforward
+    ${FEEDFORWARD_BENCHMARK_SOURCES}
+)
+
+network_enable_warnings(${PROJECT_NAME}-feedforward)
+
+target_include_directories(${PROJECT_NAME}-feedforward PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(${PROJECT_NAME}-feedforward PUBLIC
+    nn-runtime
+    ${TORCH_LIBRARIES}
+)
+
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(${PROJECT_NAME}-feedforward PUBLIC OpenMP::OpenMP_CXX)
+endif()
+
+set_property(TARGET ${PROJECT_NAME}-feedforward PROPERTY CXX_STANDARD 17)
+
+add_executable(${PROJECT_NAME}
+    main.cpp
 )
 
 network_enable_warnings(${PROJECT_NAME})
@@ -108,19 +143,14 @@ if(CPPCHECK_EXECUTABLE)
         COMMAND ${CPPCHECK_EXECUTABLE}
             ${CPPCHECK_ARGS}
             ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/feedforward.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/feedforward.h
+            ${FEEDFORWARD_BENCHMARK_SOURCES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Running cppcheck"
         VERBATIM
     )
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE nn-runtime ${TORCH_LIBRARIES})
-
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)
-endif()
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}-feedforward)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 if(BUILD_TESTING)
