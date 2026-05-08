@@ -92,14 +92,13 @@ if(ENABLE_COVERAGE)
 endif()
 
 find_package(Torch REQUIRED)
-find_package(OpenCV REQUIRED)
 
 add_subdirectory(libs/nn-runtime)
 
 add_executable(${PROJECT_NAME}
     main.cpp
-    src/hopfield.cpp
-    src/hopfield.h
+    src/feedforward.cpp
+    src/feedforward.h
 )
 
 network_enable_warnings(${PROJECT_NAME})
@@ -109,16 +108,15 @@ if(CPPCHECK_EXECUTABLE)
         COMMAND ${CPPCHECK_EXECUTABLE}
             ${CPPCHECK_ARGS}
             ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/hopfield.cpp
-            ${CMAKE_CURRENT_SOURCE_DIR}/src/hopfield.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/feedforward.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/src/feedforward.h
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Running cppcheck"
         VERBATIM
     )
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE nn-runtime ${TORCH_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(${PROJECT_NAME} PRIVATE nn-runtime ${TORCH_LIBRARIES})
 
 if(OpenMP_CXX_FOUND)
     target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)

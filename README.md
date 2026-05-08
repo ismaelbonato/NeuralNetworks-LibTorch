@@ -1,48 +1,47 @@
-# Hopfield Network Example with LibTorch and OpenCV
+# Feedforward Runtime Benchmark Example
 
-This project demonstrates a simple **discrete Hopfield network** implemented in C++ using [LibTorch](https://pytorch.org/cppdocs/) (the C++ API for PyTorch) and [OpenCV](https://opencv.org/) for image preprocessing.
+This project demonstrates a small **feedforward neural network** implemented in C++ using [LibTorch](https://pytorch.org/cppdocs/) and then mirrored into `nn-runtime` through app-local exported weights.
 
 ## Features
 
-- Stores multiple binary patterns (from PNG images) in a Hopfield network.
-- Recalls a pattern from a noisy version using Hebbian learning.
-- Visualizes patterns as ASCII art in the terminal.
+- Defines a two-layer network with a `2 -> 2` hidden layer and a `2 -> 1` output layer.
+- Loads deterministic XOR fixture weights into LibTorch `Linear` layers.
+- Exports those weights into small in-memory structs in the app layer.
+- Builds the equivalent `nn-runtime` model without adding LibTorch awareness to `nn-runtime`.
+- Prints predictions for the four XOR inputs from both backends.
+- Benchmarks inference after both backends and input batches have already been constructed.
 
 ## Requirements
 
 - [LibTorch](https://pytorch.org/get-started/locally/) (tested with 1.13+)
-- [OpenCV](https://opencv.org/) (tested with 4.x)
 - C++17 compiler
 
 ## Usage
 
-1. **Prepare Images:**  
-   Place your 64x64 grayscale PNG images in the appropriate directory (see the hardcoded paths in `hopfield.cpp`).
-2. **Build with CMake:**  
-    Then, build the project:  
+1. **Build with CMake:**  
     ```sh
-    mkdir build
-    cd build
-    cmake ..
-    make -j$(nproc)
+    cmake --preset clang-debug
+    cmake --build --preset clang-debug
     ```
 
-3. **Run:**
+2. **Run:**
    ```
-   ./hopfield
+   ./build-clang/nn-training
    ```
 
 ## How it Works
 
-- **Image Preprocessing:**  
-  Each PNG is loaded, resized to 64x64, and binarized (`>128` becomes `1`, else `-1`).
-
 - **Network Construction:**  
-  Patterns are stored using the Hebbian rule:  
-  \( W = \sum_{p} p \cdot p^T \), with zero diagonal.
+  The app registers two LibTorch `Linear` layers: one input layer with 2 inputs and 2 outputs, and one output layer with 2 inputs and 1 output.
 
-- **Recall:**  
-  A noisy pattern is iteratively updated until convergence using the sign activation.
+- **Weight Export:**  
+  The app exports each LibTorch dense layer into local `DenseLayerWeights` / `FeedforwardWeights` structs. These structs stay outside `libs/nn-runtime`.
+
+- **Runtime Mirror:**  
+  The app converts the exported weights into `nn::DenseLayerRecipe` and `nn::Parameters`, then builds an equivalent `nn-runtime` model.
 
 - **Output:**  
-  Both the noisy and recalled patterns are printed as ASCII art.
+  The executable prints LibTorch and `nn-runtime` predictions for each XOR input so parity can be checked before benchmarking.
+
+- **Benchmarking:**  
+  The LibTorch model, `nn-runtime` model, and input batches are all created before timing starts. The benchmark loop measures repeated inference batches only.

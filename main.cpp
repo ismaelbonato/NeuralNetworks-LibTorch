@@ -1,6 +1,6 @@
-#include "src/hopfield.h"
+#include "src/feedforward.h"
 
 int main()
 {
-    return runHopfieldDemo();
+    return runFeedforwardDemo();
 }
