@@ -1,6 +1,8 @@
-#include "src/benchmark/feedforward.h"
+#include "src/audio/lowPassFIR/training/LowPassFIRModel.h"
 
 int main()
 {
-    return runFeedforwardDemo();
+    auto result = audio::lowPassFIR::trainLowPassFIR();
+
+    return 0;
 }

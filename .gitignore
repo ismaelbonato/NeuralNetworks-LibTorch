@@ -73,3 +73,6 @@ coverage/
 
 #clangd cache
 .cache/*
+
+#assets
+nn-training-assets

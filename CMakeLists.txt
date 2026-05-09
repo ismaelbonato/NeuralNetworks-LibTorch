@@ -132,6 +132,38 @@ endif()
 
 set_property(TARGET ${PROJECT_NAME}-feedforward PROPERTY CXX_STANDARD 17)
 
+set(LOW_PASS_FIR_SOURCES
+    src/audio/lowPassFIR/AudioFile.cpp
+    src/audio/lowPassFIR/AudioFile.h
+    src/audio/lowPassFIR/training/LowPassFIRModel.cpp
+    src/audio/lowPassFIR/training/LowPassFIRModel.h
+)
+
+add_library(${PROJECT_NAME}-low-pass-fir
+    ${LOW_PASS_FIR_SOURCES}
+)
+
+network_enable_warnings(${PROJECT_NAME}-low-pass-fir)
+
+target_include_directories(${PROJECT_NAME}-low-pass-fir PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_include_directories(${PROJECT_NAME}-low-pass-fir SYSTEM PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party
+)
+
+target_link_libraries(${PROJECT_NAME}-low-pass-fir PUBLIC
+    ${TORCH_LIBRARIES}
+)
+
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(${PROJECT_NAME}-low-pass-fir PUBLIC OpenMP::OpenMP_CXX)
+endif()
+
+set_property(TARGET ${PROJECT_NAME}-low-pass-fir PROPERTY CXX_STANDARD 17)
+
 add_executable(${PROJECT_NAME}
     main.cpp
 )
@@ -144,13 +176,17 @@ if(CPPCHECK_EXECUTABLE)
             ${CPPCHECK_ARGS}
             ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
             ${FEEDFORWARD_BENCHMARK_SOURCES}
+            ${LOW_PASS_FIR_SOURCES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Running cppcheck"
         VERBATIM
     )
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}-feedforward)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${PROJECT_NAME}-feedforward
+    ${PROJECT_NAME}-low-pass-fir
+)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 
 if(BUILD_TESTING)
