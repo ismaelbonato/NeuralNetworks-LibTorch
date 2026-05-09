@@ -9,7 +9,16 @@ namespace audio::lowPassFIR {
 
 namespace {
 
-constexpr size_t kernelRadius = (kernelSize - 1) / 2;
+constexpr size_t targetAlignmentOffset = (kernelSize - 1) / 2;
+
+size_t validConvolutionOutputLength(const size_t inputLength)
+{
+    if (inputLength < kernelSize) {
+        throw std::invalid_argument("input must be at least kernel length");
+    }
+
+    return inputLength - kernelSize + 1;
+}
 
 std::vector<float> cropSamples(const std::vector<float> &samples,
                                const size_t start,
@@ -24,20 +33,11 @@ std::vector<float> cropSamples(const std::vector<float> &samples,
     return {cropStart, cropEnd};
 }
 
-size_t validConvolutionOutputLength(const size_t inputLength)
-{
-    if (inputLength < kernelSize) {
-        throw std::invalid_argument("input must be at least kernel length");
-    }
-
-    return inputLength - kernelSize + 1;
-}
-
-std::vector<float> cropTargetForValidConvolution(
-    const std::vector<float> &target, const size_t inputLength)
+std::vector<float> cropAlignedTarget(const std::vector<float> &target,
+                                     const size_t inputLength)
 {
     return cropSamples(target,
-                       kernelRadius,
+                       targetAlignmentOffset,
                        validConvolutionOutputLength(inputLength));
 }
 
@@ -99,15 +99,13 @@ torch::Tensor LowPassFIRNetwork::forward(const torch::Tensor &input)
     return convolution->forward(input);
 }
 
-TrainingFixture makeTrainingFixture()
+TrainingFixture loadTrainingFixture()
 {
     TrainingFixture fixture;
     // Input stays full length; valid convolution shortens only the prediction.
     fixture.input = audio::lowPassFIR::readMonoWav(audioSample).samples;
-
     const auto fullTarget = audio::lowPassFIR::readMonoWav(audioTarget).samples;
-    fixture.target = cropTargetForValidConvolution(fullTarget,
-                                                   fixture.input.size());
+    fixture.target = cropAlignedTarget(fullTarget, fixture.input.size());
     return fixture;
 }
 
@@ -127,7 +125,7 @@ TrainingResult trainLowPassFIR()
 
     TrainingResult result;
     result.network = std::make_shared<LowPassFIRNetwork>();
-    result.fixture = makeTrainingFixture();
+    result.fixture = loadTrainingFixture();
 
     // Convert fixture vectors to the Conv1d tensor layout.
     auto input = audioTensor(result.fixture.input);

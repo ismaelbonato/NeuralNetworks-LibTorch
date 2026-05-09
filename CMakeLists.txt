@@ -135,6 +135,8 @@ set_property(TARGET ${PROJECT_NAME}-feedforward PROPERTY CXX_STANDARD 17)
 set(LOW_PASS_FIR_SOURCES
     src/audio/lowPassFIR/AudioFile.cpp
     src/audio/lowPassFIR/AudioFile.h
+    src/audio/lowPassFIR/runtime/LibTorchRuntime.cpp
+    src/audio/lowPassFIR/runtime/LibTorchRuntime.h
     src/audio/lowPassFIR/training/LowPassFIRModel.cpp
     src/audio/lowPassFIR/training/LowPassFIRModel.h
 )

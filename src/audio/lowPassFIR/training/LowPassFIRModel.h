@@ -11,7 +11,8 @@ namespace audio::lowPassFIR {
 const std::string audioSample
     = "../nn-training-assets/audio/lowPassFIR/monoWhiteNoise.wav";
 const std::string audioTarget
-    = "../nn-training-assets/audio/lowPassFIR/monoWhiteNoiseTarget.wav";
+    = "../nn-training-assets/audio/lowPassFIR/monoWhiteNoiseLowPass2k.wav";
+const std::string audioTest = "../nn-training-assets/audio/lowPassFIR/song.wav";
 
 constexpr size_t inputChannels = 1;
 constexpr size_t outputChannels = 1;
@@ -60,7 +61,7 @@ struct LowPassFIRNetwork : torch::nn::Module
     torch::nn::Conv1d convolution{nullptr};
 };
 
-TrainingFixture makeTrainingFixture();
+TrainingFixture loadTrainingFixture();
 
 ConvolutionWeights exportWeights(const LowPassFIRNetwork &network);
 
