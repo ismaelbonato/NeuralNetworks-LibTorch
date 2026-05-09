@@ -137,6 +137,8 @@ set(LOW_PASS_FIR_SOURCES
     src/audio/lowPassFIR/AudioFile.h
     src/audio/lowPassFIR/runtime/LibTorchRuntime.cpp
     src/audio/lowPassFIR/runtime/LibTorchRuntime.h
+    src/audio/lowPassFIR/runtime/NNRuntime.cpp
+    src/audio/lowPassFIR/runtime/NNRuntime.h
     src/audio/lowPassFIR/training/LowPassFIRModel.cpp
     src/audio/lowPassFIR/training/LowPassFIRModel.h
 )
@@ -157,6 +159,7 @@ target_include_directories(${PROJECT_NAME}-low-pass-fir SYSTEM PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}-low-pass-fir PUBLIC
+    nn-runtime
     ${TORCH_LIBRARIES}
 )
 

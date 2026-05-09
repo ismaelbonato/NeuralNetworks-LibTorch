@@ -24,9 +24,24 @@ std::vector<float> tensorValues(const torch::Tensor &tensor)
     return {data, data + count};
 }
 
+[[maybe_unused]] void printVector(const char *label,
+                                  const std::vector<float> &values,
+                                  std::ostream &output)
+{
+    output << label << ": [";
+    for (size_t index = 0; index < values.size(); ++index) {
+        if (index != 0) {
+            output << ", ";
+        }
+        output << values[index];
+    }
+    output << "]\n";
+}
+
 } // namespace
 
-LibTorchRuntime::LibTorchRuntime(std::shared_ptr<LowPassFIRNetwork> trainedNetwork)
+LibTorchRuntime::LibTorchRuntime(
+    std::shared_ptr<LowPassFIRNetwork> trainedNetwork)
     : network(std::move(trainedNetwork))
 {
     if (!network) {
@@ -40,6 +55,15 @@ std::vector<float> LibTorchRuntime::infer(const std::vector<float> &input)
 {
     torch::NoGradGuard noGrad;
     return tensorValues(network->forward(audioTensor(input)));
+}
+
+std::vector<float> LibTorchRuntime::printInferenceVectors(
+    const std::vector<float> &input, std::ostream &output)
+{
+    const auto result = infer(input);
+    //printVector("LibTorch runtime input", input, output);
+    //printVector("LibTorch runtime output", result, output);
+    return result;
 }
 
 } // namespace audio::lowPassFIR
