@@ -132,42 +132,42 @@ endif()
 
 set_property(TARGET ${PROJECT_NAME}-feedforward PROPERTY CXX_STANDARD 17)
 
-set(LOW_PASS_FIR_SOURCES
-    src/audio/lowPassFIR/AudioFile.cpp
-    src/audio/lowPassFIR/AudioFile.h
-    src/audio/lowPassFIR/runtime/LibTorchRuntime.cpp
-    src/audio/lowPassFIR/runtime/LibTorchRuntime.h
-    src/audio/lowPassFIR/runtime/NNRuntime.cpp
-    src/audio/lowPassFIR/runtime/NNRuntime.h
-    src/audio/lowPassFIR/training/LowPassFIRModel.cpp
-    src/audio/lowPassFIR/training/LowPassFIRModel.h
+set(FIR_FILTER_SOURCES
+    src/audio/firFilter/AudioFile.cpp
+    src/audio/firFilter/AudioFile.h
+    src/audio/firFilter/runtime/LibTorchRuntime.cpp
+    src/audio/firFilter/runtime/LibTorchRuntime.h
+    src/audio/firFilter/runtime/NNRuntime.cpp
+    src/audio/firFilter/runtime/NNRuntime.h
+    src/audio/firFilter/training/FIRFilterModel.cpp
+    src/audio/firFilter/training/FIRFilterModel.h
 )
 
-add_library(${PROJECT_NAME}-low-pass-fir
-    ${LOW_PASS_FIR_SOURCES}
+add_library(${PROJECT_NAME}-fir-filter
+    ${FIR_FILTER_SOURCES}
 )
 
-network_enable_warnings(${PROJECT_NAME}-low-pass-fir)
+network_enable_warnings(${PROJECT_NAME}-fir-filter)
 
-target_include_directories(${PROJECT_NAME}-low-pass-fir PUBLIC
+target_include_directories(${PROJECT_NAME}-fir-filter PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_include_directories(${PROJECT_NAME}-low-pass-fir SYSTEM PUBLIC
+target_include_directories(${PROJECT_NAME}-fir-filter SYSTEM PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party
 )
 
-target_link_libraries(${PROJECT_NAME}-low-pass-fir PUBLIC
+target_link_libraries(${PROJECT_NAME}-fir-filter PUBLIC
     nn-runtime
     ${TORCH_LIBRARIES}
 )
 
 if(OpenMP_CXX_FOUND)
-    target_link_libraries(${PROJECT_NAME}-low-pass-fir PUBLIC OpenMP::OpenMP_CXX)
+    target_link_libraries(${PROJECT_NAME}-fir-filter PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
-set_property(TARGET ${PROJECT_NAME}-low-pass-fir PROPERTY CXX_STANDARD 17)
+set_property(TARGET ${PROJECT_NAME}-fir-filter PROPERTY CXX_STANDARD 17)
 
 add_executable(${PROJECT_NAME}
     main.cpp
@@ -181,7 +181,7 @@ if(CPPCHECK_EXECUTABLE)
             ${CPPCHECK_ARGS}
             ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
             ${FEEDFORWARD_BENCHMARK_SOURCES}
-            ${LOW_PASS_FIR_SOURCES}
+            ${FIR_FILTER_SOURCES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Running cppcheck"
         VERBATIM
@@ -190,7 +190,7 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${PROJECT_NAME}-feedforward
-    ${PROJECT_NAME}-low-pass-fir
+    ${PROJECT_NAME}-fir-filter
 )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
 

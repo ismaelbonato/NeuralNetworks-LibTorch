@@ -1,7 +1,7 @@
-#include "audio/lowPassFIR/AudioFile.h"
-#include "audio/lowPassFIR/runtime/LibTorchRuntime.h"
-#include "audio/lowPassFIR/runtime/NNRuntime.h"
-#include "audio/lowPassFIR/training/LowPassFIRModel.h"
+#include "audio/firFilter/AudioFile.h"
+#include "audio/firFilter/runtime/LibTorchRuntime.h"
+#include "audio/firFilter/runtime/NNRuntime.h"
+#include "audio/firFilter/training/FIRFilterModel.h"
 
 #include <algorithm>
 #include <cmath>
@@ -9,19 +9,19 @@
 
 int main()
 {
-    auto result = audio::lowPassFIR::trainLowPassFIR();
+    const audio::firFilter::FIRFilterConfig config{};
+    auto result = audio::firFilter::trainFIRFilter(config);
 
-    result.fixture.input
-        = audio::lowPassFIR::readMonoWav(audio::lowPassFIR::audioTest).samples;
+    const auto runtimeInput = audio::firFilter::readMonoWav(
+        config.runtimeInputPath);
 
     // libtorch runtime
-    audio::lowPassFIR::LibTorchRuntime runtime(result.network);
-    const auto output = runtime.printInferenceVectors(result.fixture.input,
-                                                      std::cout);
+    audio::firFilter::LibTorchRuntime runtime(result.network);
+    const auto output = runtime.infer(runtimeInput.samples);
 
     // nn-runtime runtime
-    audio::lowPassFIR::NNRuntime nnRuntime(result.weights);
-    const auto nnOutput = nnRuntime.infer(result.fixture.input);
+    audio::firFilter::NNRuntime nnRuntime(result.weights);
+    const auto nnOutput = nnRuntime.infer(runtimeInput.samples);
 
     std::cout << "LibTorch runtime output samples: " << output.size()
               << std::endl;
@@ -36,17 +36,21 @@ int main()
     std::cout << "runtime max absolute difference: " << maxDifference
               << std::endl;
 
-    audio::lowPassFIR::MonoAudio outputAudio;
-    outputAudio.sampleRate = 44100;
+    audio::firFilter::MonoAudio outputAudio;
+    outputAudio.sampleRate = runtimeInput.sampleRate;
     outputAudio.samples = output;
 
-    audio::lowPassFIR::writeMonoWav("output.wav", outputAudio);
+    audio::firFilter::writeMonoWav("output.wav", outputAudio);
 
-    audio::lowPassFIR::MonoAudio nnOutputAudio;
-    nnOutputAudio.sampleRate = 44100;
+    audio::firFilter::MonoAudio nnOutputAudio;
+    nnOutputAudio.sampleRate = runtimeInput.sampleRate;
     nnOutputAudio.samples = nnOutput;
 
-    audio::lowPassFIR::writeMonoWav("nnOutput.wav", nnOutputAudio);
+    audio::firFilter::writeMonoWav("nnOutput.wav", nnOutputAudio);
+
+    audio::firFilter::writeModelJson("firFilterModel.json",
+                                     result.weights,
+                                     result.fixture.sampleRate);
 
     return 0;
 }

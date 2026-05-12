@@ -26,7 +26,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace audio::lowPassFIR {
+namespace audio::firFilter {
 
 namespace {
 
@@ -105,4 +105,4 @@ void writeMonoWav(const std::string &path, const MonoAudio &audio)
     }
 }
 
-} // namespace audio::lowPassFIR
+} // namespace audio::firFilter

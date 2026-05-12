@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <utility>
 
-namespace audio::lowPassFIR {
+namespace audio::firFilter {
 
 namespace {
 
@@ -39,9 +39,9 @@ std::unique_ptr<nn::ConvolutionalLayer> makeRuntimeConvolutionalLayer(
     const size_t inputLength)
 {
     nn::ConvolutionalLayerRecipe recipe;
-    recipe.name = "low-pass FIR";
+    recipe.name = "FIR filter";
     recipe.type = "ConvolutionalLayer";
-    recipe.info = "exported LibTorch low-pass FIR layer";
+    recipe.info = "exported LibTorch FIR filter layer";
     recipe.activation = std::make_shared<nn::IdentityActivation<nn::Scalar>>();
     recipe.inputChannels = weights.inputChannelCount;
     recipe.inputLength = inputLength;
@@ -77,4 +77,4 @@ std::vector<float> NNRuntime::infer(const std::vector<float> &input) const
     return flattenedValues(model.infer(runtimeInput(input)));
 }
 
-} // namespace audio::lowPassFIR
+} // namespace audio::firFilter

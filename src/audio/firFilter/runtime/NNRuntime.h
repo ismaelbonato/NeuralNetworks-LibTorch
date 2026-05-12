@@ -1,10 +1,10 @@
 #pragma once
 
-#include "audio/lowPassFIR/training/LowPassFIRModel.h"
+#include "audio/firFilter/training/FIRFilterModel.h"
 
 #include <vector>
 
-namespace audio::lowPassFIR {
+namespace audio::firFilter {
 
 class NNRuntime
 {
@@ -17,4 +17,4 @@ private:
     ConvolutionWeights weights;
 };
 
-} // namespace audio::lowPassFIR
+} // namespace audio::firFilter

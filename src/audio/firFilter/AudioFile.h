@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace audio::lowPassFIR {
+namespace audio::firFilter {
 
 struct MonoAudio
 {
@@ -16,4 +16,4 @@ MonoAudio readMonoWav(const std::string &path);
 
 void writeMonoWav(const std::string &path, const MonoAudio &audio);
 
-} // namespace audio::lowPassFIR
+} // namespace audio::firFilter
