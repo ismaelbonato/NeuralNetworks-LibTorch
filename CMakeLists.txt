@@ -133,12 +133,15 @@ endif()
 set_property(TARGET ${PROJECT_NAME}-feedforward PROPERTY CXX_STANDARD 17)
 
 set(FIR_FILTER_SOURCES
+    src/audio/firFilter/FIRFilterTypes.h
     src/audio/firFilter/AudioFile.cpp
     src/audio/firFilter/AudioFile.h
     src/audio/firFilter/runtime/LibTorchRuntime.cpp
     src/audio/firFilter/runtime/LibTorchRuntime.h
     src/audio/firFilter/runtime/NNRuntime.cpp
     src/audio/firFilter/runtime/NNRuntime.h
+    src/audio/firFilter/serialization/FIRFilterModelJson.cpp
+    src/audio/firFilter/serialization/FIRFilterModelJson.h
     src/audio/firFilter/training/FIRFilterModel.cpp
     src/audio/firFilter/training/FIRFilterModel.h
 )
@@ -202,6 +205,10 @@ if(BUILD_TESTING)
     )
 
     network_enable_warnings(${TEST_EXECUTABLE})
+
+    target_link_libraries(${TEST_EXECUTABLE} PRIVATE
+        ${PROJECT_NAME}-fir-filter
+    )
 
     add_test(NAME smoke COMMAND ${TEST_EXECUTABLE})
 

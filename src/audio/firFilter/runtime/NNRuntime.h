@@ -1,6 +1,6 @@
 #pragma once
 
-#include "audio/firFilter/training/FIRFilterModel.h"
+#include "audio/firFilter/FIRFilterTypes.h"
 
 #include <vector>
 
