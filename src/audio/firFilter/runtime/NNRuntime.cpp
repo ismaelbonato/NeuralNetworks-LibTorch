@@ -6,6 +6,7 @@
 #include "base/Types.h"
 #include "layers/ConvolutionalLayer.h"
 
+#include <chrono>
 #include <memory>
 #include <stdexcept>
 #include <utility>
@@ -75,6 +76,16 @@ std::vector<float> NNRuntime::infer(const std::vector<float> &input) const
     nn::Model model;
     model.addLayer(makeRuntimeConvolutionalLayer(weights, input.size()));
     return flattenedValues(model.infer(runtimeInput(input)));
+}
+
+InferenceResult NNRuntime::inferMeasured(const std::vector<float> &input) const
+{
+    const auto start = std::chrono::steady_clock::now();
+    auto samples = infer(input);
+    const auto end = std::chrono::steady_clock::now();
+
+    return {std::move(samples),
+            std::chrono::duration<double, std::milli>(end - start).count()};
 }
 
 } // namespace audio::firFilter

@@ -12,6 +12,7 @@ public:
     explicit NNRuntime(ConvolutionWeights weights);
 
     std::vector<float> infer(const std::vector<float> &input) const;
+    InferenceResult inferMeasured(const std::vector<float> &input) const;
 
 private:
     ConvolutionWeights weights;

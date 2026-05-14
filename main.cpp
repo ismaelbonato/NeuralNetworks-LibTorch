@@ -49,11 +49,11 @@ int main()
 
     std::cout << "Running LibTorch runtime" << std::endl;
     audio::firFilter::LibTorchRuntime runtime(result.network);
-    const auto output = runtime.infer(runtimeInput.samples);
+    const auto output = runtime.inferMeasured(runtimeInput.samples);
 
     std::cout << "Running in-memory nn-runtime" << std::endl;
     audio::firFilter::NNRuntime nnRuntime(result.weights);
-    const auto nnOutput = nnRuntime.infer(runtimeInput.samples);
+    const auto nnOutput = nnRuntime.inferMeasured(runtimeInput.samples);
 
     const auto modelJsonPath = outputPath(outputConfig, outputConfig.modelJson);
     std::cout << "Exporting FIR model JSON: " << modelJsonPath << std::endl;
@@ -67,23 +67,31 @@ int main()
 
     std::cout << "Running JSON-loaded nn-runtime" << std::endl;
     audio::firFilter::NNRuntime jsonRuntime(loadedModel.weights);
-    const auto jsonOutput = jsonRuntime.infer(runtimeInput.samples);
+    const auto jsonOutput = jsonRuntime.inferMeasured(runtimeInput.samples);
 
     std::cout << "Verification summary" << std::endl;
-    std::cout << "LibTorch runtime output samples: " << output.size()
+    std::cout << "LibTorch runtime output samples: " << output.samples.size()
               << std::endl;
-    std::cout << "nn-runtime output samples: " << nnOutput.size() << std::endl;
-    std::cout << "JSON nn-runtime output samples: " << jsonOutput.size()
+    std::cout << "nn-runtime output samples: " << nnOutput.samples.size()
               << std::endl;
+    std::cout << "JSON nn-runtime output samples: "
+              << jsonOutput.samples.size() << std::endl;
     std::cout << "runtime max absolute difference: "
-              << maxAbsoluteDifference(output, nnOutput) << std::endl;
-    std::cout << "JSON runtime max absolute difference: "
-              << maxAbsoluteDifference(output, jsonOutput)
+              << maxAbsoluteDifference(output.samples, nnOutput.samples)
               << std::endl;
+    std::cout << "JSON runtime max absolute difference: "
+              << maxAbsoluteDifference(output.samples, jsonOutput.samples)
+              << std::endl;
+    std::cout << "LibTorch runtime inference time: "
+              << output.elapsedMilliseconds << " ms" << std::endl;
+    std::cout << "nn-runtime inference time: " << nnOutput.elapsedMilliseconds
+              << " ms" << std::endl;
+    std::cout << "JSON nn-runtime inference time: "
+              << jsonOutput.elapsedMilliseconds << " ms" << std::endl;
 
     audio::firFilter::MonoAudio outputAudio;
     outputAudio.sampleRate = runtimeInput.sampleRate;
-    outputAudio.samples = output;
+    outputAudio.samples = output.samples;
 
     const auto libTorchOutputPath = outputPath(outputConfig,
                                                outputConfig.libTorchOutputWav);
@@ -93,7 +101,7 @@ int main()
 
     audio::firFilter::MonoAudio nnOutputAudio;
     nnOutputAudio.sampleRate = runtimeInput.sampleRate;
-    nnOutputAudio.samples = nnOutput;
+    nnOutputAudio.samples = nnOutput.samples;
 
     const auto nnRuntimeOutputPath = outputPath(
         outputConfig,

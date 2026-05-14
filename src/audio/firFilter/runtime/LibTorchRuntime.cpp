@@ -1,5 +1,6 @@
 #include "LibTorchRuntime.h"
 
+#include <chrono>
 #include <stdexcept>
 #include <utility>
 
@@ -41,6 +42,16 @@ std::vector<float> LibTorchRuntime::infer(const std::vector<float> &input)
 {
     torch::NoGradGuard noGrad;
     return tensorValues(network->forward(audioTensor(input)));
+}
+
+InferenceResult LibTorchRuntime::inferMeasured(const std::vector<float> &input)
+{
+    const auto start = std::chrono::steady_clock::now();
+    auto samples = infer(input);
+    const auto end = std::chrono::steady_clock::now();
+
+    return {std::move(samples),
+            std::chrono::duration<double, std::milli>(end - start).count()};
 }
 
 } // namespace audio::firFilter

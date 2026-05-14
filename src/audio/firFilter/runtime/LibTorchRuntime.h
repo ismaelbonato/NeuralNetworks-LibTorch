@@ -13,6 +13,7 @@ public:
     explicit LibTorchRuntime(std::shared_ptr<FIRFilterNetwork> trainedNetwork);
 
     std::vector<float> infer(const std::vector<float> &input);
+    InferenceResult inferMeasured(const std::vector<float> &input);
 
 private:
     std::shared_ptr<FIRFilterNetwork> network;

@@ -47,4 +47,10 @@ struct ConvolutionWeights
     std::vector<float> biases;
 };
 
+struct InferenceResult
+{
+    std::vector<float> samples;
+    double elapsedMilliseconds = 0.0;
+};
+
 } // namespace audio::firFilter
