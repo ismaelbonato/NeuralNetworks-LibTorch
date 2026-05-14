@@ -26,6 +26,14 @@ struct FIRFilterConfig
     size_t targetAlignmentOffset = 50;
 };
 
+struct FIRFilterOutputConfig
+{
+    std::string outputDirectory = "output/fir-filter";
+    std::string libTorchOutputWav = "libtorch-output.wav";
+    std::string nnRuntimeOutputWav = "nn-runtime-output.wav";
+    std::string modelJson = "fir-filter-model.json";
+};
+
 struct ConvolutionWeights
 {
     // Plain exported weights for building the same FIR layer in another runtime.
